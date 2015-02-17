@@ -128,9 +128,7 @@ struct device_driver {
 
 	bool suppress_bind_attrs;	/* disables bind/unbind via sysfs */
 
-#if defined(CONFIG_OF)
 	const struct of_device_id	*of_match_table;
-#endif
 
 	int (*probe) (struct device *dev);
 	int (*remove) (struct device *dev);
@@ -410,7 +408,7 @@ struct device {
 
 	struct kobject kobj;
 	const char		*init_name; /* initial name of the device */
-	struct device_type	*type;
+	const struct device_type *type;
 
 	struct mutex		mutex;	/* mutex to synchronize calls to
 					 * its driver.
@@ -441,9 +439,8 @@ struct device {
 					     override */
 	/* arch specific additions */
 	struct dev_archdata	archdata;
-#ifdef CONFIG_OF
-	struct device_node	*of_node;
-#endif
+
+	struct device_node	*of_node; /* associated device tree node */
 
 	dev_t			devt;	/* dev_t, creates the sysfs "dev" */
 
@@ -736,12 +733,16 @@ do {						     \
 #endif
 
 /*
- * dev_WARN() acts like dev_printk(), but with the key difference
+ * dev_WARN*() acts like dev_printk(), but with the key difference
  * of using a WARN/WARN_ON to get the message out, including the
  * file/line information and a backtrace.
  */
 #define dev_WARN(dev, format, arg...) \
 	WARN(1, "Device: %s\n" format, dev_driver_string(dev), ## arg);
+
+#define dev_WARN_ONCE(dev, condition, format, arg...) \
+	WARN_ONCE(condition, "Device %s\n" format, \
+			dev_driver_string(dev), ## arg)
 
 /* Create alias, so I can be autoloaded. */
 #define MODULE_ALIAS_CHARDEV(major,minor) \

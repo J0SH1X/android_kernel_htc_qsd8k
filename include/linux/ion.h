@@ -477,6 +477,12 @@ int ion_map_iommu(struct ion_client *client, struct ion_handle *handle,
 int ion_handle_get_size(struct ion_client *client, struct ion_handle *handle,
 			unsigned long *size);
 
+static inline struct sg_table *ion_sg_table(struct ion_client *client,
+			      struct ion_handle *handle)
+{
+	return ERR_PTR(-ENODEV);
+}
+
 /**
  * ion_unmap_iommu - unmap the handle from an iommu
  *

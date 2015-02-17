@@ -63,7 +63,8 @@
 #include "board-bravo-tpa2018d1.h"
 #include "board-bravo-smb329.h"
 
-#include <linux/msm_kgsl.h>
+#include <mach/kgsl.h>
+//#include <linux/msm_kgsl.h>
 #include <linux/regulator/machine.h>
 #include "footswitch.h"
 #include <linux/ion.h>
@@ -308,12 +309,26 @@ static struct kgsl_device_platform_data kgsl_3d0_pdata = {
 			.gpu_freq = 0,
 			.bus_freq = 128000000,
 		},
+		/*{
+			.gpu_freq = 245760000,
+			.bus_freq = 200000000,
+		},
+		{
+			.gpu_freq = 192000000,
+			.bus_freq = 160000000,
+		},
+		{
+			.gpu_freq = 133330000,
+			.bus_freq = 0,
+		},*/
 	},
 	.init_level = 0,
-	.num_levels = 1,
+	.num_levels = 3,
 	.set_grp_async = NULL,
 	.idle_timeout = HZ/5,
-	.clk_map = KGSL_CLK_GRP | KGSL_CLK_IMEM,
+	.strtstp_sleepwake = true,
+	.nap_allowed = false,
+	.clk_map = KGSL_CLK_CORE | KGSL_CLK_IFACE | KGSL_CLK_MEM,
 };
 
 struct platform_device msm_kgsl_3d0 = {
